@@ -1,45 +1,70 @@
-// Prøxy engine handler
 (function initProxy() {
-  const WORKER_BASE = 'https://pinpoint.keymoreshealth.workers.dev';
+  // Base URL of the worker handling the proxy
+  const WORKER_URL = 'https://pinpoint.keymoreshealth.workers.dev';
 
   const engineSelect = document.getElementById('engine-select');
-  const urlInput = document.getElementById('browser-url');
-  const goBtn = document.getElementById('browser-go');
-  const frame = document.getElementById('proxy-frame');
+  const browserForm = document.getElementById('browser-form');
+  const browserUrl = document.getElementById('browser-url');
+  const proxyFrame = document.getElementById('proxy-frame');
+  const urlInput = document.getElementById('url-input');
+  const addressForm = document.getElementById('address-form');
 
-  function getPrefix(engine) {
-    const map = {
-      uv3: '/uv/service/',
-      sj1: '/scramjet/1/',
-      sj2: '/scramjet/2/',
-      sj3: '/scramjet/3/',
-      sj2a: '/scramjet/alpha/',
-      rh: '/rammerhead/'
-    };
-    return map[engine] || '/uv/service/';
-  }
-
-  function navigate() {
-    const url = urlInput.value.trim();
-    if (!url) return;
-    const engine = engineSelect.value;
-    const prefix = getPrefix(engine);
-    const target = WORKER_BASE + prefix + encodeURIComponent(url);
-    frame.src = target;
-  }
-
-  goBtn.addEventListener('click', navigate);
-  urlInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') navigate();
-  });
-
-  // Home search bar
-  const homeSearch = document.getElementById('home-search');
-  homeSearch.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      urlInput.value = homeSearch.value;
-      document.querySelector('[data-tab="browser"]').click();
-      navigate();
+  // Global function so the dock can call it
+  window.openProxy = function(targetUrl) {
+    if (!targetUrl) return;
+    
+    // Ensure it has https://
+    if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+      if (targetUrl.includes('.') && !targetUrl.includes(' ')) {
+        targetUrl = 'https://' + targetUrl;
+      } else {
+        targetUrl = 'https://www.google.com/search?q=' + encodeURIComponent(targetUrl);
+      }
     }
+
+    // Switch to browser tab
+    document.querySelector('[data-tab="browser"]').click();
+
+    // Determine the proxy route based on the engine selected
+    const engine = engineSelect.value;
+    let proxyUrl = '';
+
+    // Assuming your worker handles /uv/ and /scramjet/ paths by forwarding to the CDN
+    // We use the standard Wisp/Bare proxy patterns.
+    // If the worker is set up correctly with Scramjet, this should work:
+    if (engine.startsWith('sj')) {
+      // Scramjet proxy URL format
+      proxyUrl = `${WORKER_URL}/scramjet/${encodeURIComponent(targetUrl)}`;
+    } else {
+      // Ultraviolet proxy URL format
+      proxyUrl = `${WORKER_URL}/uv/service/${encodeURIComponent(targetUrl)}`;
+    }
+
+    // Update UI
+    browserUrl.value = targetUrl;
+    urlInput.value = targetUrl;
+    proxyFrame.src = proxyUrl;
+  };
+
+  // Handle Browser Tab form submit
+  browserForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    window.openProxy(browserUrl.value);
   });
+
+  // Handle Top Bar form submit
+  addressForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    window.openProxy(urlInput.value);
+  });
+
+  // Handle Home Search form submit
+  const homeSearchForm = document.getElementById('home-search-form');
+  if (homeSearchForm) {
+    homeSearchForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const val = document.getElementById('home-search').value;
+      window.openProxy(val);
+    });
+  }
 })();
