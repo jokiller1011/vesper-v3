@@ -1,5 +1,12 @@
 // Cloudflare Worker – Prøxy backend + Static Frontend for Vesper v3
-const BARE_SERVER = 'https://bare.mercuryworkshop.org/'; // Public Bare server for actual proxying
+import { ScramjetServiceWorker } from 'https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@2.0.67-alpha.2/dist/scramjet.all.js';
+
+const BARE_SERVERS = [
+  'https://bare.mercuryworkshop.org/',
+  'https://demo-opensource.rammerhead.org/',
+  'https://uv.example.com/bare/' // Placeholder for your own backup
+];
+let bareIndex = 0;
 
 export default {
   async fetch(request, env) {
@@ -16,18 +23,30 @@ export default {
       return new Response(null, { headers: corsHeaders });
     }
 
-    // --- Prøxy Bare Server Routing ---
-    if (path.startsWith('/bare/')) {
-      const target = BARE_SERVER + path.replace('/bare/', '');
-      return fetchWithCors(target, request, corsHeaders);
+    // --- Scramjet Service Worker Routing ---
+    if (path.startsWith('/scramjet/')) {
+      const sw = new ScramjetServiceWorker();
+      return sw.fetch(request);
     }
-    
-    // --- Prøxy Scramjet & UV Routing ---
-    if (path.startsWith('/scramjet/') || path.startsWith('/uv/')) {
-      // In a full production setup, you would route these to the actual CDN.
-      // For now, we let the static fallback handle the frontend, 
-      // and if they try to proxy, we pass it to the bare server logic.
-      return fetchWithCors(path, request, corsHeaders);
+
+    // --- Prøxy Bare Server Routing with Fallback ---
+    if (path.startsWith('/bare/')) {
+      for (let i = 0; i < BARE_SERVERS.length; i++) {
+        const server = BARE_SERVERS[(bareIndex + i) % BARE_SERVERS.length];
+        try {
+          const target = server + path.replace('/bare/', '');
+          const response = await fetch(target, {
+            method: request.method,
+            headers: request.headers,
+            body: request.body,
+          });
+          if (response.ok) {
+            bareIndex = (bareIndex + i) % BARE_SERVERS.length; // Update to the working server
+            return addCors(response, corsHeaders);
+          }
+        } catch (e) { /* Ignore and try next server */ }
+      }
+      return new Response('All Bare servers failed', { status: 502, headers: corsHeaders });
     }
 
     // --- Static Frontend Fallback ---
@@ -44,13 +63,7 @@ export default {
   },
 };
 
-async function fetchWithCors(target, originalRequest, corsHeaders) {
-  const newReq = new Request(target, {
-    method: originalRequest.method,
-    headers: originalRequest.headers,
-    body: originalRequest.body,
-  });
-  const response = await fetch(newReq);
+function addCors(response, corsHeaders) {
   const newResponse = new Response(response.body, response);
   Object.entries(corsHeaders).forEach(([k, v]) => newResponse.headers.set(k, v));
   return newResponse;
