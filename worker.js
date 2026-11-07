@@ -1,10 +1,10 @@
 // Cloudflare Worker – Prøxy backend + Static Frontend for Vesper v3
-import { ScramjetServiceWorker } from 'https://cdn.jsdelivr.net/npm/@mercuryworkshop/scramjet@2.0.67-alpha.2/dist/scramjet.all.js';
 
+// Public Bare servers for proxying fallback
 const BARE_SERVERS = [
   'https://bare.mercuryworkshop.org/',
   'https://demo-opensource.rammerhead.org/',
-  'https://uv.example.com/bare/' // Placeholder for your own backup
+  'https://uv.example.com/bare/' // Backup placeholder
 ];
 let bareIndex = 0;
 
@@ -21,12 +21,6 @@ export default {
 
     if (request.method === 'OPTIONS') {
       return new Response(null, { headers: corsHeaders });
-    }
-
-    // --- Scramjet Service Worker Routing ---
-    if (path.startsWith('/scramjet/')) {
-      const sw = new ScramjetServiceWorker();
-      return sw.fetch(request);
     }
 
     // --- Prøxy Bare Server Routing with Fallback ---
