@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vesper v3</title>
+  <link rel="icon" type="image/svg+xml" href="assets/images/Vesper Logo(Clear).svg" />
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Simple Icons CDN for dock -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-icons-font@v9/font/simple-icons.min.css" />
+</head>
+<body>
+  <!-- Rain canvas -->
+  <canvas id="rain-canvas"></canvas>
+
+  <!-- Loading overlay -->
+  <div id="loading-overlay">
+    <div class="loading-logo">
+      <img id="loading-v" src="assets/images/Vesper Logo(w only clear).svg" alt="V" />
+      <p>loading…</p>
+    </div>
+  </div>
+
+  <!-- Auth screen -->
+  <div id="auth-screen" class="hidden">
+    <div class="auth-card">
+      <img src="assets/images/Vesper Logo(Clear).svg" alt="Vesper v3" class="auth-logo" />
+      <h1>vesper <span>v3</span></h1>
+      <form id="email-auth-form">
+        <input type="email" id="auth-email" placeholder="Email" required />
+        <input type="password" id="auth-password" placeholder="Password" required />
+        <button type="submit" id="auth-submit">Sign In / Sign Up</button>
+      </form>
+      <button id="github-auth" class="github-btn">
+        <i class="si si-github"></i> Sign in with GitHub
+      </button>
+      <p class="auth-error" id="auth-error"></p>
+    </div>
+  </div>
+
+  <!-- Main app (hidden until auth) -->
+  <div id="app" class="hidden">
+    <!-- Top bar -->
+    <header class="top-bar">
+      <div class="nav-arrows">
+        <button id="nav-back">‹</button>
+        <button id="nav-forward">›</button>
+      </div>
+      <div class="address-bar">
+        <input type="text" id="url-input" placeholder="Search or enter URL" />
+        <button id="bookmark-btn">☆</button>
+      </div>
+      <div class="top-actions">
+        <button id="sign-in-btn" class="hidden">Sign In</button>
+        <a href="https://discord.gg/cB88uhGqn" target="_blank" class="discord-join">
+          <i class="si si-discord"></i> Join Discord
+        </a>
+      </div>
+    </header>
+
+    <!-- Pill sidebar (right) -->
+    <nav class="pill-sidebar">
+      <button data-tab="home" class="active"><i class="si si-home"></i><span>Home</span></button>
+      <button data-tab="games"><i class="si si-gamepad"></i><span>Games</span></button>
+      <button data-tab="media"><i class="si si-film"></i><span>Media</span></button>
+      <button data-tab="browser"><i class="si si-globe"></i><span>Browser</span></button>
+      <button data-tab="settings"><i class="si si-settings"></i><span>Settings</span></button>
+    </nav>
+
+    <!-- Main content area -->
+    <main id="main-content">
+      <!-- Home tab -->
+      <section id="tab-home" class="tab active">
+        <div class="home-center">
+          <img src="assets/images/Vesper Logo(Clear).svg" alt="vesper" class="home-wordmark" />
+          <div class="search-wrapper">
+            <input type="text" id="home-search" placeholder="Search the web…" />
+          </div>
+        </div>
+        <!-- Dynamic Dock -->
+        <div id="dynamic-dock">
+          <a href="https://discord.com" target="_blank" class="dock-item"><i class="si si-discord"></i></a>
+          <a href="https://youtube.com" target="_blank" class="dock-item"><i class="si si-youtube"></i></a>
+          <a href="https://tiktok.com" target="_blank" class="dock-item"><i class="si si-tiktok"></i></a>
+          <a href="https://instagram.com" target="_blank" class="dock-item"><i class="si si-instagram"></i></a>
+          <a href="https://claude.ai" target="_blank" class="dock-item"><i class="si si-anthropic"></i></a>
+        </div>
+      </section>
+
+      <!-- Games tab -->
+      <section id="tab-games" class="tab hidden">
+        <h2>Games (GN-Math)</h2>
+        <div id="games-list" class="games-grid"></div>
+        <iframe id="game-frame" class="hidden" frameborder="0"></iframe>
+      </section>
+
+      <!-- Media tab -->
+      <section id="tab-media" class="tab hidden">
+        <h2>Media</h2>
+        <p>Movies & TV shows – provider integration (free, no payment).</p>
+        <div id="media-content"></div>
+      </section>
+
+      <!-- Browser tab -->
+      <section id="tab-browser" class="tab hidden">
+        <div class="browser-controls">
+          <select id="engine-select">
+            <option value="uv3">Ultraviolet 3x</option>
+            <option value="sj1">Scramjet 1x</option>
+            <option value="sj2">Scramjet 2x</option>
+            <option value="sj3">Scramjet 3x</option>
+            <option value="sj2a">Scramjet 2.0.67-alpha.2</option>
+            <option value="rh">Rammerhead</option>
+          </select>
+          <input type="text" id="browser-url" placeholder="Enter URL" />
+          <button id="browser-go">Go</button>
+        </div>
+        <iframe id="proxy-frame" frameborder="0"></iframe>
+      </section>
+
+      <!-- Settings tab -->
+      <section id="tab-settings" class="tab hidden">
+        <h2>Settings</h2>
+        <div class="settings-group">
+          <h3>Account</h3>
+          <button id="link-github">Link GitHub</button>
+          <button id="sign-out">Sign Out</button>
+        </div>
+        <div class="settings-group">
+          <h3>Prøxy</h3>
+          <label>Engine <select id="setting-engine"></select></label>
+          <label><input type="checkbox" id="setting-close-prevention" checked /> Close Prevention</label>
+          <label><input type="checkbox" id="setting-block-prevention" checked /> Block Prevention</label>
+          <label><input type="checkbox" id="setting-source-random" /> Source Randomization</label>
+          <label><input type="checkbox" id="setting-url-encoding" /> URL Encoding</label>
+          <label><input type="checkbox" id="setting-tor" /> Tor Routing</label>
+          <label>Character Masking <input type="range" id="setting-masking" min="0" max="100" value="0" /></label>
+        </div>
+        <div class="settings-group">
+          <h3>Cloaking</h3>
+          <label>Tab Cloaking <select id="cloak-select">
+            <option value="">None</option>
+            <option value="google-classroom">Google Classroom</option>
+            <option value="google-drive">Google Drive</option>
+            <option value="ixl">IXL</option>
+            <option value="canvas">Canvas</option>
+          </select></label>
+          <label><input type="checkbox" id="cloak-about-blank" /> About:Blank Cloaking</label>
+          <label><input type="checkbox" id="cloak-click-off" /> Click‑Off Cloaking</label>
+          <label><input type="checkbox" id="cloak-history" /> Hide from History</label>
+        </div>
+        <div class="settings-group">
+          <h3>Customization</h3>
+          <label>Theme Color <input type="color" id="theme-color" value="#007bff" /></label>
+          <label><input type="checkbox" id="liquid-glass" checked /> Liquid Glass</label>
+        </div>
+        <div class="settings-group credits">
+          <p>Credits: jokiller1011 (founder), coolgui (co‑founder), GN‑Math, Mercury Workshop.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/supabase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/loading.js"></script>
+  <script src="js/rain.js"></script>
+  <script src="js/dock.js"></script>
+  <script src="js/proxy.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
