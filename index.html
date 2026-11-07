@@ -6,27 +6,25 @@
   <title>Vesper v3</title>
   <link rel="icon" type="image/svg+xml" href="assets/images/Vesper Logo(w only clear).svg" />
   <link rel="stylesheet" href="css/style.css" />
-  <!-- Supabase JS -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Simple Icons CDN for dock -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-icons-font@v9/font/simple-icons.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-  <!-- Rain canvas -->
+  <!-- Subtle ambient glow layer -->
+  <div class="ambient-bg"></div>
   <canvas id="rain-canvas"></canvas>
 
   <!-- Loading overlay -->
   <div id="loading-overlay">
     <div class="loading-logo">
-      <img id="loading-v" src="assets/images/Vesper Logo(w only clear).svg" alt="V" />
-      <p>loading…</p>
+      <img src="assets/images/Vesper Logo(w only clear).svg" alt="V" />
+      <p>loading<span class="dots">...</span></p>
     </div>
   </div>
 
   <!-- Auth screen -->
   <div id="auth-screen" class="hidden">
     <div class="auth-card">
-      <!-- Use the white background logo for the auth screen so it pops -->
       <img src="assets/images/Vesper Logo(w only).svg" alt="Vesper v3" class="auth-logo" />
       <h1>vesper <span>v3</span></h1>
       <form id="email-auth-form">
@@ -41,38 +39,42 @@
     </div>
   </div>
 
-  <!-- Main app (hidden until auth) -->
+  <!-- Main app -->
   <div id="app" class="hidden">
-    <!-- Top bar -->
+    <!-- Top header -->
     <header class="top-bar">
       <div class="nav-arrows">
-        <button id="nav-back">‹</button>
-        <button id="nav-forward">›</button>
+        <button id="nav-back" aria-label="Back">‹</button>
+        <button id="nav-forward" aria-label="Forward">›</button>
       </div>
       <div class="address-bar">
+        <i class="si si-search" style="opacity:0.4;font-size:0.9rem;"></i>
         <input type="text" id="url-input" placeholder="Search or enter URL" />
-        <button id="bookmark-btn">☆</button>
+        <button id="bookmark-btn" aria-label="Bookmark">☆</button>
       </div>
       <div class="top-actions">
-        <button id="sign-in-btn" class="hidden">Sign In</button>
         <a href="https://discord.gg/cB88uhGqn" target="_blank" class="discord-join">
           <i class="si si-discord"></i> Join Discord
         </a>
       </div>
     </header>
 
-    <!-- Pill sidebar (right) -->
-    <nav class="pill-sidebar">
-      <button data-tab="home" class="active"><i class="si si-home"></i><span>Home</span></button>
-      <button data-tab="games"><i class="si si-gamepad"></i><span>Games</span></button>
-      <button data-tab="media"><i class="si si-film"></i><span>Media</span></button>
-      <button data-tab="browser"><i class="si si-globe"></i><span>Browser</span></button>
-      <button data-tab="settings"><i class="si si-settings"></i><span>Settings</span></button>
+    <!-- Vertical navigation rail (left) -->
+    <nav class="nav-rail">
+      <div class="nav-rail-top">
+        <button data-tab="home" class="active" aria-label="Home"><i class="si si-home"></i><span>Home</span></button>
+        <button data-tab="games" aria-label="Games"><i class="si si-gamepad"></i><span>Games</span></button>
+        <button data-tab="media" aria-label="Media"><i class="si si-film"></i><span>Media</span></button>
+        <button data-tab="browser" aria-label="Browser"><i class="si si-globe"></i><span>Browser</span></button>
+      </div>
+      <div class="nav-rail-bottom">
+        <button data-tab="settings" aria-label="Settings"><i class="si si-settings"></i><span>Settings</span></button>
+      </div>
     </nav>
 
-    <!-- Main content area -->
+    <!-- Main content -->
     <main id="main-content">
-      <!-- Home tab -->
+      <!-- Home -->
       <section id="tab-home" class="tab active">
         <div class="home-center">
           <img src="assets/images/Vesper Logo(Clear).svg" alt="vesper" class="home-wordmark" />
@@ -80,7 +82,6 @@
             <input type="text" id="home-search" placeholder="Search the web…" />
           </div>
         </div>
-        <!-- Dynamic Dock -->
         <div id="dynamic-dock">
           <a href="https://discord.com" target="_blank" class="dock-item"><i class="si si-discord"></i></a>
           <a href="https://youtube.com" target="_blank" class="dock-item"><i class="si si-youtube"></i></a>
@@ -90,21 +91,21 @@
         </div>
       </section>
 
-      <!-- Games tab -->
+      <!-- Games -->
       <section id="tab-games" class="tab hidden">
-        <h2>Games (GN-Math)</h2>
+        <h2>Games</h2>
         <div id="games-list" class="games-grid"></div>
         <iframe id="game-frame" class="hidden" frameborder="0"></iframe>
       </section>
 
-      <!-- Media tab -->
+      <!-- Media -->
       <section id="tab-media" class="tab hidden">
         <h2>Media</h2>
-        <p>Movies & TV shows – provider integration (free, no payment).</p>
+        <p class="muted-text">Movies & TV shows – provider integration.</p>
         <div id="media-content"></div>
       </section>
 
-      <!-- Browser tab -->
+      <!-- Browser -->
       <section id="tab-browser" class="tab hidden">
         <div class="browser-controls">
           <select id="engine-select">
@@ -116,18 +117,18 @@
             <option value="rh">Rammerhead</option>
           </select>
           <input type="text" id="browser-url" placeholder="Enter URL" />
-          <button id="browser-go">Go</button>
+          <button id="browser-go" class="primary-btn">Go</button>
         </div>
         <iframe id="proxy-frame" frameborder="0"></iframe>
       </section>
 
-      <!-- Settings tab -->
+      <!-- Settings -->
       <section id="tab-settings" class="tab hidden">
         <h2>Settings</h2>
         <div class="settings-group">
           <h3>Account</h3>
-          <button id="link-github">Link GitHub</button>
-          <button id="sign-out">Sign Out</button>
+          <button id="link-github" class="secondary-btn">Link GitHub</button>
+          <button id="sign-out" class="secondary-btn">Sign Out</button>
         </div>
         <div class="settings-group">
           <h3>Prøxy</h3>
@@ -157,9 +158,7 @@
           <label>Theme Color <input type="color" id="theme-color" value="#3b82f6" /></label>
           <label><input type="checkbox" id="liquid-glass" checked /> Liquid Glass</label>
         </div>
-        <div class="settings-group credits">
-          <p>Credits: jokiller1011 (founder), coolgui (co‑founder), GN‑Math, Mercury Workshop.</p>
-        </div>
+        <p class="credits">Credits: jokiller1011 (founder), coolgui (co‑founder), GN‑Math, Mercury Workshop.</p>
       </section>
     </main>
   </div>
