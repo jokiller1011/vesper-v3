@@ -24,16 +24,13 @@
     const engine = engineSelect.value;
     let proxyUrl = '';
 
-    // Route to the correct engine path
+    // Route to the correct engine path through our Worker's Bare server
     if (engine === 'rh') {
-        // Rammerhead uses a different routing logic
-        proxyUrl = `${WORKER_URL}/rammerhead/${encodeURIComponent(targetUrl)}`;
+        proxyUrl = `${WORKER_URL}/bare/rammerhead/${encodeURIComponent(targetUrl)}`;
     } else if (engine.startsWith('sj')) {
-      // Scramjet versions
-      proxyUrl = `${WORKER_URL}/scramjet/${encodeURIComponent(targetUrl)}`;
+      proxyUrl = `${WORKER_URL}/bare/scramjet/${encodeURIComponent(targetUrl)}`;
     } else {
-      // Ultraviolet 3x
-      proxyUrl = `${WORKER_URL}/uv/service/${encodeURIComponent(targetUrl)}`;
+      proxyUrl = `${WORKER_URL}/bare/uv/${encodeURIComponent(targetUrl)}`;
     }
 
     // About:Blank Cloaking Logic
@@ -43,17 +40,13 @@
             win.document.write(`<iframe src="${proxyUrl}" style="width:100%;height:100%;border:none;margin:0;padding:0;"></iframe>`);
             win.document.body.style.margin = '0';
             win.document.body.style.overflow = 'hidden';
-            // Optionally close the original page to hide it
-            // window.close();
         } else {
             alert('Please allow pop-ups for About:Blank cloaking to work.');
-            // Fallback to normal iframe
             browserUrl.value = targetUrl;
             urlInput.value = targetUrl;
             proxyFrame.src = proxyUrl;
         }
     } else {
-        // Normal iframe behavior
         browserUrl.value = targetUrl;
         urlInput.value = targetUrl;
         proxyFrame.src = proxyUrl;
