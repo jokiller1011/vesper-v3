@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vesper v3</title>
-  <link rel="icon" type="image/svg+xml" href="assets/images/Vesper Logo(Clear).svg" />
+  <link rel="icon" type="image/svg+xml" href="assets/images/Vesper Logo(w only clear).svg" />
   <link rel="stylesheet" href="css/style.css" />
   <!-- Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -26,7 +26,8 @@
   <!-- Auth screen -->
   <div id="auth-screen" class="hidden">
     <div class="auth-card">
-      <img src="assets/images/Vesper Logo(Clear).svg" alt="Vesper v3" class="auth-logo" />
+      <!-- Use the white background logo for the auth screen so it pops -->
+      <img src="assets/images/Vesper Logo(w only).svg" alt="Vesper v3" class="auth-logo" />
       <h1>vesper <span>v3</span></h1>
       <form id="email-auth-form">
         <input type="email" id="auth-email" placeholder="Email" required />
@@ -153,7 +154,7 @@
         </div>
         <div class="settings-group">
           <h3>Customization</h3>
-          <label>Theme Color <input type="color" id="theme-color" value="#007bff" /></label>
+          <label>Theme Color <input type="color" id="theme-color" value="#3b82f6" /></label>
           <label><input type="checkbox" id="liquid-glass" checked /> Liquid Glass</label>
         </div>
         <div class="settings-group credits">
