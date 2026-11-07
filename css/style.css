@@ -13,9 +13,8 @@
   --font: 'Inter', 'Segoe UI', system-ui, sans-serif;
   --radius-sm: 8px;
   --radius-md: 12px;
-  --sidebar-w: 70px;
+  --sidebar-w: 78px; /* Slightly wider for tabs */
   --header-h: 56px;
-  --tab-bar-h: 38px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -101,29 +100,38 @@ input, select { font-family: inherit; }
 }
 .discord-join:hover { background: #4752c4; }
 
-/* ========== TAB BAR ========== */
-.tab-bar {
-  position: fixed; top: var(--header-h); left: 0; right: var(--sidebar-w); height: var(--tab-bar-h);
-  display: flex; align-items: center; gap: 4px; padding: 0 8px;
-  background: var(--bg-elevated); border-bottom: 1px solid var(--border-subtle); z-index: 95;
-}
-.browser-tab {
-  display: flex; align-items: center; gap: 8px; height: 30px; padding: 0 16px;
-  background: var(--bg-glass); border: 1px solid var(--border-subtle); border-bottom: none;
-  border-radius: 8px 8px 0 0; font-size: 0.8rem; color: var(--text-primary); cursor: pointer;
-}
-.browser-tab.active { background: var(--bg-base); border-color: var(--border-subtle); }
-.new-tab-btn { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 8px; color: var(--text-secondary); font-size: 1.1rem; cursor: pointer; }
-.new-tab-btn:hover { background: var(--bg-hover); color: #fff; }
-
-/* ========== RIGHT SIDEBAR ========== */
+/* ========== RIGHT SIDEBAR (Tabs + Navigation) ========== */
 .sidebar {
   position: fixed; top: var(--header-h); right: 0; bottom: 0; width: var(--sidebar-w);
-  display: flex; flex-direction: column; justify-content: space-between;
-  padding: 12px 0 20px; background: var(--bg-elevated); border-left: 1px solid var(--border-subtle);
-  backdrop-filter: blur(24px); z-index: 100;
+  display: flex; flex-direction: column;
+  padding: 8px 0 16px; background: var(--bg-elevated); border-left: 1px solid var(--border-subtle);
+  backdrop-filter: blur(24px); z-index: 100; gap: 8px; /* Added gap for spacing between sections */
 }
-.sidebar-top, .sidebar-bottom { display: flex; flex-direction: column; gap: 4px; }
+/* Tab Bar Container */
+.tab-bar-container {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 4px 0; border-bottom: 1px solid var(--border-subtle); margin-bottom: 8px;
+}
+.tab-bar { display: flex; flex-direction: column; gap: 4px; width: 100%; align-items: center; }
+.browser-tab {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 60px; height: 32px; padding: 0 4px 0 8px;
+  background: var(--bg-glass); border: 1px solid var(--border-subtle);
+  border-radius: 6px; font-size: 0.65rem; color: var(--text-primary); cursor: pointer;
+  overflow: hidden;
+}
+.browser-tab.active { background: var(--bg-base); border-color: var(--border-accent); }
+.browser-tab .close-tab { font-size: 1rem; color: var(--text-secondary); padding: 0 2px; line-height: 1; }
+.browser-tab .close-tab:hover { color: #ef4444; }
+.new-tab-btn {
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  border-radius: 6px; color: var(--text-secondary); font-size: 1.1rem; cursor: pointer;
+}
+.new-tab-btn:hover { background: var(--bg-hover); color: #fff; }
+
+/* Sidebar Navigation Sections */
+.sidebar-nav-top, .sidebar-nav-bottom { display: flex; flex-direction: column; gap: 4px; width: 100%; }
+.sidebar-nav-bottom { margin-top: auto; } /* Pushes this section to the bottom */
 .sidebar button {
   display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; padding: 10px 0;
   color: var(--text-secondary); font-size: 0.65rem; font-weight: 500; transition: 0.15s;
@@ -133,8 +141,8 @@ input, select { font-family: inherit; }
 
 /* ========== MAIN CONTENT ========== */
 #main-content {
-  position: relative; z-index: 1; margin-top: calc(var(--header-h) + var(--tab-bar-h));
-  margin-right: var(--sidebar-w); height: calc(100vh - var(--header-h) - var(--tab-bar-h));
+  position: relative; z-index: 1; margin-top: var(--header-h);
+  margin-right: var(--sidebar-w); height: calc(100vh - var(--header-h));
   overflow-y: auto; padding: 24px 28px;
 }
 .tab { padding: 8px 0; }
@@ -164,13 +172,21 @@ input, select { font-family: inherit; }
 }
 .dock-item:hover { transform: scale(1.4) translateY(-12px); background: rgba(255,255,255,0.1); }
 
-/* ========== GAMES & BROWSER ========== */
+/* ========== GAMES & BROWSER & MEDIA ========== */
 .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 16px; margin-top: 12px; }
 .game-card {
   background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: 12px;
   padding: 22px 16px; text-align: center; font-weight: 600; cursor: pointer; transition: 0.2s;
 }
 .game-card:hover { transform: translateY(-4px); border-color: var(--border-accent); }
+
+.media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 12px; }
+.media-card {
+  background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: 12px;
+  padding: 16px; display: flex; flex-direction: column; gap: 8px;
+}
+.media-card h3 { font-size: 0.9rem; }
+.media-card p { font-size: 0.75rem; color: var(--text-secondary); }
 
 .browser-controls { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
 .browser-controls select, .browser-controls input {
