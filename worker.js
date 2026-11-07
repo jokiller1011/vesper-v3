@@ -21,6 +21,14 @@ export default {
       const target = BARE_SERVER + path.replace('/bare/', '');
       return fetchWithCors(target, request, corsHeaders);
     }
+    
+    // --- Prøxy Scramjet & UV Routing ---
+    if (path.startsWith('/scramjet/') || path.startsWith('/uv/')) {
+      // In a full production setup, you would route these to the actual CDN.
+      // For now, we let the static fallback handle the frontend, 
+      // and if they try to proxy, we pass it to the bare server logic.
+      return fetchWithCors(path, request, corsHeaders);
+    }
 
     // --- Static Frontend Fallback ---
     try {
