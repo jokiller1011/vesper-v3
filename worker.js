@@ -18,27 +18,29 @@ export default {
       return new Response(null, { headers: corsHeaders });
     }
 
-    // --- Prøxy routes (Scramjet, Ultraviolet, Rammerhead) ---
+    // --- Prøxy routes ---
     if (path.startsWith('/scramjet/')) {
       const subPath = path.replace('/scramjet/', '');
-      const target = SCRAMJET_CDN + subPath;
-      return fetchWithCors(target, request, corsHeaders);
+      return fetchWithCors(SCRAMJET_CDN + subPath, request, corsHeaders);
     }
     if (path.startsWith('/uv/')) {
       const subPath = path.replace('/uv/', '');
-      const target = UV_CDN + subPath;
-      return fetchWithCors(target, request, corsHeaders);
+      return fetchWithCors(UV_CDN + subPath, request, corsHeaders);
     }
     if (path.startsWith('/rammerhead/')) {
       const subPath = path.replace('/rammerhead/', '');
-      const target = RAMMERHEAD_BASE + subPath;
-      return fetchWithCors(target, request, corsHeaders);
+      return fetchWithCors(RAMMERHEAD_BASE + subPath, request, corsHeaders);
     }
 
     // --- Static Frontend Fallback ---
-    // This tells Cloudflare: "If it's not a proxy route, serve the website files."
     try {
-      return await env.ASSETS.fetch(request);
+      const response = await env.ASSETS.fetch(request);
+      // If the file doesn't exist (e.g., an OAuth redirect URL), serve index.html
+      if (response.status === 404) {
+        const indexUrl = new URL('/index.html', request.url);
+        return await env.ASSETS.fetch(new Request(indexUrl, request));
+      }
+      return response;
     } catch (e) {
       return new Response('Not found', { status: 404, headers: corsHeaders });
     }
