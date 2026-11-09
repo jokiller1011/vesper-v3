@@ -4,13 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vesper v3</title>
-  <!-- Use your renamed logo file. Ensure it's in assets/images/ -->
   <link rel="icon" type="image/svg+xml" href="assets/images/VesperLogo(w only).svg" />
   <link rel="stylesheet" href="css/style.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-  <!-- Loading Screen -->
   <div id="loading-overlay">
     <div class="loading-logo">
       <img src="assets/images/VesperLogo(w only).svg" alt="V" />
@@ -18,7 +16,6 @@
     </div>
   </div>
 
-  <!-- Auth Screen -->
   <div id="auth-screen" class="hidden">
     <div class="auth-card">
       <img src="assets/images/VesperLogo(w only).svg" alt="Vesper v3" class="auth-logo" />
@@ -29,15 +26,13 @@
         <button type="submit" id="auth-submit">Sign In / Sign Up</button>
       </form>
       <button id="github-auth" class="github-btn">
-        <img src="https://cdn.simpleicons.org/github/ffffff" width="16" height="16" alt="" /> Sign in with GitHub
+        <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/github.svg" width="16" height="16" alt="" style="filter: invert(1);" /> Sign in with GitHub
       </button>
       <p class="auth-error" id="auth-error"></p>
     </div>
   </div>
 
-  <!-- Main Application -->
   <div id="app" class="hidden">
-    <!-- Top Bar -->
     <header class="top-bar">
       <div class="nav-arrows">
         <button id="nav-back" aria-label="Back">‹</button>
@@ -49,13 +44,11 @@
         <button type="submit" id="bookmark-btn" aria-label="Bookmark">☆</button>
       </form>
       <a href="https://discord.gg/cB88uhGqn" target="_blank" class="discord-join">
-        <img src="https://cdn.simpleicons.org/discord/ffffff" width="16" height="16" alt="" /> Join Discord
+        <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/discord.svg" width="16" height="16" alt="" style="filter: invert(1);" /> Join Discord
       </a>
     </header>
 
-    <!-- Right Sidebar (Tabs + Navigation) -->
     <nav class="sidebar">
-      <!-- Tab Bar -->
       <div class="tab-bar-container">
         <div class="tab-bar" id="tab-bar">
           <div class="browser-tab active" data-tab-id="0">
@@ -66,34 +59,31 @@
         <button class="new-tab-btn" id="new-tab-btn" aria-label="New tab">+</button>
       </div>
 
-      <!-- Navigation Items -->
       <div class="sidebar-nav">
         <button data-tab="home" class="active" title="Home">
-          <img src="https://cdn.simpleicons.org/home/ffffff" width="20" height="20" alt="" />
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/home.svg" width="20" height="20" alt="" style="filter: invert(1);" />
           <span>Home</span>
         </button>
         <button data-tab="browser" title="Browser">
-          <img src="https://cdn.simpleicons.org/googlechrome/ffffff" width="20" height="20" alt="" />
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/googlechrome.svg" width="20" height="20" alt="" style="filter: invert(1);" />
           <span>Browser</span>
         </button>
         <button data-tab="games" title="Games">
-          <img src="https://cdn.simpleicons.org/gamepad/ffffff" width="20" height="20" alt="" />
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/gamepad.svg" width="20" height="20" alt="" style="filter: invert(1);" />
           <span>Games</span>
         </button>
         <button data-tab="media" title="Media">
-          <img src="https://cdn.simpleicons.org/film/ffffff" width="20" height="20" alt="" />
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/film.svg" width="20" height="20" alt="" style="filter: invert(1);" />
           <span>Media</span>
         </button>
         <button data-tab="settings" title="Settings">
-          <img src="https://cdn.simpleicons.org/settings/ffffff" width="20" height="20" alt="" />
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/settings.svg" width="20" height="20" alt="" style="filter: invert(1);" />
           <span>Settings</span>
         </button>
       </div>
     </nav>
 
-    <!-- Main Content -->
     <main id="main-content">
-      <!-- Home Tab -->
       <section id="tab-home" class="tab active">
         <div class="home-center">
           <img src="assets/images/VesperLogo(Clear).svg" alt="vesper" class="home-wordmark" />
@@ -102,41 +92,38 @@
           </form>
         </div>
         
-        <!-- Dock -->
         <div id="dynamic-dock">
           <button class="dock-item" onclick="window.openProxy('https://discord.com')">
-            <img src="https://cdn.simpleicons.org/discord/ffffff" alt="Discord" width="32" height="32" />
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/discord.svg" alt="Discord" width="32" height="32" style="filter: invert(1);" />
           </button>
           <button class="dock-item" onclick="window.openProxy('https://youtube.com')">
-            <img src="https://cdn.simpleicons.org/youtube/ffffff" alt="YouTube" width="32" height="32" />
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/youtube.svg" alt="YouTube" width="32" height="32" style="filter: invert(1);" />
           </button>
           <button class="dock-item" onclick="window.openProxy('https://tiktok.com')">
-            <img src="https://cdn.simpleicons.org/tiktok/ffffff" alt="TikTok" width="32" height="32" />
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/tiktok.svg" alt="TikTok" width="32" height="32" style="filter: invert(1);" />
           </button>
           <button class="dock-item" onclick="window.openProxy('https://instagram.com')">
-            <img src="https://cdn.simpleicons.org/instagram/ffffff" alt="Instagram" width="32" height="32" />
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/instagram.svg" alt="Instagram" width="32" height="32" style="filter: invert(1);" />
           </button>
           <button class="dock-item" onclick="window.openProxy('https://claude.ai')">
-            <img src="https://cdn.simpleicons.org/claude/ffffff" alt="Claude" width="32" height="32" />
+            <!-- Using the Anthropic logo as a reliable fallback -->
+            <img src="https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/anthropic.svg" alt="Claude" width="32" height="32" style="filter: invert(1);" />
           </button>
         </div>
       </section>
 
-      <!-- Games Tab -->
       <section id="tab-games" class="tab hidden">
         <h2>Games</h2>
         <div id="games-list" class="games-grid"></div>
         <iframe id="game-frame" class="hidden" frameborder="0"></iframe>
       </section>
 
-      <!-- Media Tab -->
       <section id="tab-media" class="tab hidden">
         <h2>Media</h2>
         <p class="muted-text">Movies & TV shows (Discovery only)</p>
         <div id="media-results" class="media-grid"></div>
       </section>
 
-      <!-- Browser Tab -->
       <section id="tab-browser" class="tab hidden">
         <div class="browser-controls">
           <select id="engine-select">
@@ -155,11 +142,9 @@
         <iframe id="proxy-frame" frameborder="0"></iframe>
       </section>
 
-      <!-- Settings Tab -->
       <section id="tab-settings" class="tab hidden">
         <h2>Settings</h2>
         
-        <!-- Account -->
         <div class="settings-group">
           <h3>Account</h3>
           <label>Username <input type="text" id="setting-username" placeholder="Change username" /></label>
@@ -167,7 +152,6 @@
           <button id="sign-out" class="secondary-btn">Sign Out</button>
         </div>
 
-        <!-- Proxy -->
         <div class="settings-group">
           <h3>Prøxy</h3>
           <label>Engine <select id="setting-engine"></select></label>
@@ -178,7 +162,6 @@
           <label class="toggle-row">Tor Routing <input type="checkbox" id="setting-tor" class="toggle-input" /></label>
         </div>
 
-        <!-- Cloaking -->
         <div class="settings-group">
           <h3>Cloaking</h3>
           <label>Tab Cloaking <select id="cloak-select">
@@ -192,12 +175,10 @@
           <label class="toggle-row">Click‑Off Cloaking <input type="checkbox" id="cloak-click-off" class="toggle-input" /></label>
         </div>
 
-        <!-- Customization -->
         <div class="settings-group">
           <h3>Customization</h3>
           <label>Theme Color <input type="color" id="theme-color" value="#3b82f6" /></label>
           
-          <!-- Background Selector -->
           <label style="display:block; margin-bottom:8px;">Background</label>
           <div class="bg-selector" id="bg-selector">
             <div class="bg-option active" data-bg="default" style="background:#0a0a0f;"></div>
@@ -213,7 +194,6 @@
     </main>
   </div>
 
-  <!-- Scripts -->
   <script src="js/supabase-config.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/loading.js"></script>
