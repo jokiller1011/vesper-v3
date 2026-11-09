@@ -4,30 +4,27 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vesper v3</title>
-  <link rel="icon" type="image/svg+xml" href="assets/images/Vesper Logo(w only clear).svg" />
+  <link rel="icon" type="image/png" href="assets/images/vesper-v.png" />
   <link rel="stylesheet" href="css/style.css" />
-  
-  <!-- Simple Icons CDN (Crucial for the dock icons to work) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-icons-font@v9/font/simple-icons.min.css" />
-  <!-- Supabase -->
+  <!-- No Simple Icons font needed; we use direct CDN SVGs for dock -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
   <div class="ambient-bg"></div>
-  <canvas id="rain-canvas"></canvas>
+  <!-- Rain removed per request -->
 
   <!-- Loading overlay -->
   <div id="loading-overlay">
     <div class="loading-logo">
-      <img src="assets/images/Vesper Logo(w only clear).svg" alt="V" />
-      <p>loading<span class="dots">...</span></p>
+      <img src="assets/images/vesper-v.png" alt="V" />
+      <p>loading…</p>
     </div>
   </div>
 
   <!-- Auth screen -->
   <div id="auth-screen" class="hidden">
     <div class="auth-card">
-      <img src="assets/images/Vesper Logo(w only).svg" alt="Vesper v3" class="auth-logo" />
+      <img src="assets/images/vesper-v.png" alt="Vesper v3" class="auth-logo" />
       <h1>vesper <span>v3</span></h1>
       <form id="email-auth-form">
         <input type="email" id="auth-email" placeholder="Email" required />
@@ -64,7 +61,7 @@
 
     <!-- RIGHT SIDEBAR (Tabs + Navigation) -->
     <nav class="sidebar">
-      <!-- Tab Bar -->
+      <!-- Tab Bar Section -->
       <div class="tab-bar-container">
         <div class="tab-bar" id="tab-bar">
           <div class="browser-tab active" data-tab-id="0">
@@ -75,8 +72,8 @@
         <button class="new-tab-btn" id="new-tab-btn" aria-label="New tab">+</button>
       </div>
 
-      <!-- Navigation Items (Top) -->
-      <div class="sidebar-nav-top">
+      <!-- Navigation Items (NO SEPARATION between top and bottom) -->
+      <div class="sidebar-nav">
         <button data-tab="home" class="active" title="Home">
           <i class="si si-home"></i>
           <span>Home</span>
@@ -85,10 +82,6 @@
           <i class="si si-globe"></i>
           <span>Browser</span>
         </button>
-      </div>
-
-      <!-- Navigation Items (Bottom) -->
-      <div class="sidebar-nav-bottom">
         <button data-tab="games" title="Games">
           <i class="si si-gamepad"></i>
           <span>Games</span>
@@ -109,28 +102,29 @@
       <!-- Home Tab -->
       <section id="tab-home" class="tab active">
         <div class="home-center">
-          <img src="assets/images/Vesper Logo(Clear).svg" alt="vesper" class="home-wordmark" />
+          <img src="assets/images/vesper-clear.svg" alt="vesper" class="home-wordmark" />
           <form class="search-wrapper" id="home-search-form">
             <input type="text" id="home-search" placeholder="Search the web…" />
           </form>
         </div>
         
-        <!-- Dynamic Dock (Updated with Simple Icons) -->
+        <!-- Dynamic Dock (Large Icons via Simple Icons CDN) -->
         <div id="dynamic-dock">
           <button class="dock-item" onclick="window.openProxy('https://discord.com')">
-            <i class="si si-discord"></i>
+            <img src="https://cdn.simpleicons.org/discord/ffffff" alt="Discord" width="32" height="32" />
           </button>
           <button class="dock-item" onclick="window.openProxy('https://youtube.com')">
-            <i class="si si-youtube"></i>
+            <img src="https://cdn.simpleicons.org/youtube/ffffff" alt="YouTube" width="32" height="32" />
           </button>
           <button class="dock-item" onclick="window.openProxy('https://tiktok.com')">
-            <i class="si si-tiktok"></i>
+            <img src="https://cdn.simpleicons.org/tiktok/ffffff" alt="TikTok" width="32" height="32" />
           </button>
           <button class="dock-item" onclick="window.openProxy('https://instagram.com')">
-            <i class="si si-instagram"></i>
+            <img src="https://cdn.simpleicons.org/instagram/ffffff" alt="Instagram" width="32" height="32" />
           </button>
           <button class="dock-item" onclick="window.openProxy('https://claude.ai')">
-            <i class="si si-anthropic"></i>
+            <!-- Claude icon from Simple Icons CDN -->
+            <img src="https://cdn.simpleicons.org/claude/ffffff" alt="Claude" width="32" height="32" />
           </button>
         </div>
       </section>
@@ -173,17 +167,20 @@
         <h2>Settings</h2>
         <div class="settings-group">
           <h3>Account</h3>
+          <label>Username <input type="text" id="setting-username" placeholder="Change username" /></label>
+          <button id="save-username" class="secondary-btn">Save</button>
           <button id="link-github" class="secondary-btn">Link GitHub</button>
           <button id="sign-out" class="secondary-btn">Sign Out</button>
         </div>
         <div class="settings-group">
           <h3>Prøxy</h3>
           <label>Engine <select id="setting-engine"></select></label>
-          <label><input type="checkbox" id="setting-close-prevention" checked /> Close Prevention</label>
-          <label><input type="checkbox" id="setting-block-prevention" checked /> Block Prevention</label>
-          <label><input type="checkbox" id="setting-source-random" /> Source Randomization</label>
-          <label><input type="checkbox" id="setting-url-encoding" /> URL Encoding</label>
-          <label><input type="checkbox" id="setting-tor" /> Tor Routing</label>
+          <!-- All checkboxes replaced with sliders -->
+          <label>Close Prevention <input type="range" id="setting-close-prevention" min="0" max="1" value="1" step="1" /></label>
+          <label>Block Prevention <input type="range" id="setting-block-prevention" min="0" max="1" value="1" step="1" /></label>
+          <label>Source Randomization <input type="range" id="setting-source-random" min="0" max="1" value="0" step="1" /></label>
+          <label>URL Encoding <input type="range" id="setting-url-encoding" min="0" max="1" value="0" step="1" /></label>
+          <label>Tor Routing <input type="range" id="setting-tor" min="0" max="1" value="0" step="1" /></label>
         </div>
         <div class="settings-group">
           <h3>Cloaking</h3>
@@ -194,12 +191,17 @@
             <option value="ixl">IXL</option>
             <option value="canvas">Canvas</option>
           </select></label>
-          <label><input type="checkbox" id="cloak-about-blank" /> About:Blank Cloaking</label>
-          <label><input type="checkbox" id="cloak-click-off" /> Click‑Off Cloaking</label>
+          <label>About:Blank Cloaking <input type="range" id="cloak-about-blank" min="0" max="1" value="0" step="1" /></label>
+          <label>Click‑Off Cloaking <input type="range" id="cloak-click-off" min="0" max="1" value="0" step="1" /></label>
         </div>
         <div class="settings-group">
           <h3>Customization</h3>
           <label>Theme Color <input type="color" id="theme-color" value="#3b82f6" /></label>
+          <label>Background <select id="background-select">
+            <option value="default">Default (Dark)</option>
+            <option value="bg1">Background 1 (bg1.png)</option>
+            <option value="bg2">Background 2 (background.png)</option>
+          </select></label>
         </div>
         <p class="credits">Credits: jokiller1011 (founder), coolgui (co‑founder), GN‑Math, Mercury Workshop.</p>
       </section>
@@ -209,7 +211,7 @@
   <script src="js/supabase-config.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/loading.js"></script>
-  <script src="js/rain.js"></script>
+  <!-- Rain removed -->
   <script src="js/proxy.js"></script>
   <script src="js/app.js"></script>
 </body>
