@@ -15,7 +15,7 @@
     });
   });
 
-  // --- Tab Bar (Simplified) ---
+  // --- Tab Bar ---
   const tabBar = document.getElementById('tab-bar');
   const newTabBtn = document.getElementById('new-tab-btn');
   let tabCount = 1;
@@ -35,7 +35,7 @@
     });
   });
 
-  // --- Settings (Sliders, Background, Account) ---
+  // --- Settings Loading ---
   function loadSettings() {
     // Theme Color
     const savedColor = localStorage.getItem('vesper-theme');
@@ -44,19 +44,29 @@
       document.getElementById('theme-color').value = savedColor;
     }
 
-    // Sliders (Close Prevention, Block Prevention, etc.)
-    const sliderIds = ['close-prevention', 'block-prevention', 'source-random', 'url-encoding', 'tor', 'about-blank', 'click-off'];
-    sliderIds.forEach(id => {
+    // Toggles (Checkboxes)
+    const toggleIds = [
+      'close-prevention', 'block-prevention', 'source-random', 'url-encoding', 'tor',
+      'about-blank', 'click-off', 'liquid-glass'
+    ];
+    toggleIds.forEach(id => {
       const el = document.getElementById(`setting-${id}`) || document.getElementById(`cloak-${id}`);
       if (el) {
         const saved = localStorage.getItem(`vesper-${id}`);
-        if (saved !== null) el.value = saved;
-        el.addEventListener('input', () => {
-          localStorage.setItem(`vesper-${id}`, el.value);
-          if (id === 'click-off') applyClickOffCloak(el.value === '1');
+        if (saved !== null) el.checked = saved === 'true';
+        el.addEventListener('change', () => {
+          localStorage.setItem(`vesper-${id}`, el.checked);
+          if (id === 'click-off') applyClickOffCloak(el.checked);
+          if (id === 'liquid-glass') applyLiquidGlass(el.checked);
         });
       }
     });
+
+    // Initial state for click-off and liquid glass
+    const savedClickOff = localStorage.getItem('vesper-click-off') === 'true';
+    const savedLiquidGlass = localStorage.getItem('vesper-liquid-glass') === 'true';
+    applyClickOffCloak(savedClickOff);
+    applyLiquidGlass(savedLiquidGlass);
 
     // Tab Cloaking
     const cloakSelect = document.getElementById('cloak-select');
@@ -70,19 +80,21 @@
       applyCloak(cloakSelect.value);
     }
 
-    // Background Switcher
-    const bgSelect = document.getElementById('background-select');
-    if (bgSelect) {
-      const savedBg = localStorage.getItem('vesper-bg') || 'default';
-      bgSelect.value = savedBg;
-      applyBackground(savedBg);
-      bgSelect.addEventListener('change', () => {
-        localStorage.setItem('vesper-bg', bgSelect.value);
-        applyBackground(bgSelect.value);
+    // Background Selector
+    const savedBg = localStorage.getItem('vesper-bg') || 'default';
+    applyBackground(savedBg);
+    document.querySelectorAll('.bg-option').forEach(opt => {
+      opt.classList.toggle('active', opt.dataset.bg === savedBg);
+      opt.addEventListener('click', () => {
+        document.querySelectorAll('.bg-option').forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+        const bg = opt.dataset.bg;
+        localStorage.setItem('vesper-bg', bg);
+        applyBackground(bg);
       });
-    }
+    });
 
-    // Username (Account Settings)
+    // Username
     const usernameInput = document.getElementById('setting-username');
     const savedUsername = localStorage.getItem('vesper-username');
     if (savedUsername && usernameInput) usernameInput.value = savedUsername;
@@ -91,6 +103,7 @@
     });
   }
 
+  // --- Helper Functions for Settings ---
   function applyCloak(val) {
     const cloaks = {
       'google-classroom': { title: 'Classroom', favicon: 'https://ssl.gstatic.com/classroom/favicon.png' },
@@ -106,16 +119,23 @@
     } else {
       document.title = 'Vesper v3';
       let link = document.querySelector('link[rel="icon"]');
-      if (link) link.href = 'assets/images/vesper-v.png';
+      if (link) link.href = 'assets/images/VesperLogo(w only).svg';
     }
   }
 
   function applyClickOffCloak(enabled) {
+    // Remove existing listener if any (simplified approach)
+    document.removeEventListener('visibilitychange', clickOffHandler);
     if (enabled) {
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) window.location.href = 'https://google.com';
-      });
+      document.addEventListener('visibilitychange', clickOffHandler);
     }
+  }
+  function clickOffHandler() {
+    if (document.hidden) window.location.href = 'https://google.com';
+  }
+
+  function applyLiquidGlass(enabled) {
+    document.body.classList.toggle('liquid-glass', enabled);
   }
 
   function applyBackground(val) {
@@ -126,58 +146,34 @@
   }
 
   // Theme color listener
-  const themeColor = document.getElementById('theme-color');
-  if (themeColor) {
-    themeColor.addEventListener('input', () => {
-      document.documentElement.style.setProperty('--accent', themeColor.value);
-      localStorage.setItem('vesper-theme', themeColor.value);
+  document.getElementById('theme-color')?.addEventListener('input', (e) => {
+    document.documentElement.style.setProperty('--accent', e.target.value);
+    localStorage.setItem('vesper-theme', e.target.value);
+  });
+
+  // --- Load Games ---
+  const gamesList = document.getElementById('games-list');
+  const gameFrame = document.getElementById('game-frame');
+  const games = [
+    { name: 'Geometry Dash', url: 'https://gmtmath.github.io/geometry-dash/' },
+    { name: 'The Impossible Quiz', url: 'https://gmtmath.github.io/impossible-quiz/' },
+    { name: 'World\'s Hardest Game', url: 'https://gmtmath.github.io/worlds-hardest-game/' },
+    { name: 'Drive Mad', url: 'https://gmtmath.github.io/drive-mad/' }
+  ];
+  if (gamesList) {
+    games.forEach(game => {
+      const card = document.createElement('div');
+      card.className = 'game-card';
+      card.textContent = game.name;
+      card.addEventListener('click', () => {
+        gameFrame.src = `${window.location.origin}/bare/uv/${encodeURIComponent(game.url)}`;
+        gameFrame.classList.remove('hidden');
+      });
+      gamesList.appendChild(card);
     });
   }
 
-  // --- Games (Fetch Real List from GN-Math) ---
-  const gamesList = document.getElementById('games-list');
-  const gameFrame = document.getElementById('game-frame');
-  async function loadGames() {
-    try {
-      // Fetch the raw game list from the GN-Math repository
-      const res = await fetch('https://raw.githubusercontent.com/genizy/web-port/main/games.json'); // Adjust URL if needed
-      const games = await res.json(); // Assuming a JSON format
-      
-      gamesList.innerHTML = '';
-      games.forEach(game => {
-        const card = document.createElement('div');
-        card.className = 'game-card';
-        card.textContent = game.name;
-        card.addEventListener('click', () => {
-          // Proxy the game URL
-          gameFrame.src = `${window.location.origin}/bare/uv/${encodeURIComponent(game.url)}`;
-          gameFrame.classList.remove('hidden');
-        });
-        gamesList.appendChild(card);
-      });
-    } catch (e) {
-      // Fallback to default games
-      const fallbackGames = [
-        { name: 'Geometry Dash', url: 'https://gmtmath.github.io/geometry-dash/' },
-        { name: 'The Impossible Quiz', url: 'https://gmtmath.github.io/impossible-quiz/' },
-        { name: 'World\'s Hardest Game', url: 'https://gmtmath.github.io/worlds-hardest-game/' },
-        { name: 'Drive Mad', url: 'https://gmtmath.github.io/drive-mad/' }
-      ];
-      gamesList.innerHTML = '';
-      fallbackGames.forEach(game => {
-        const card = document.createElement('div');
-        card.className = 'game-card';
-        card.textContent = game.name;
-        card.addEventListener('click', () => {
-          gameFrame.src = `${window.location.origin}/bare/uv/${encodeURIComponent(game.url)}`;
-          gameFrame.classList.remove('hidden');
-        });
-        gamesList.appendChild(card);
-      });
-    }
-  }
-
-  // --- Media (Working APIs) ---
+  // --- Load Media (Discovery via free APIs) ---
   async function loadMedia() {
     const mediaResults = document.getElementById('media-results');
     if (!mediaResults) return;
@@ -207,8 +203,8 @@
   }
 
   // Event Listeners for Tabs
-  document.querySelector('[data-tab="games"]').addEventListener('click', loadGames);
-  document.querySelector('[data-tab="media"]').addEventListener('click', loadMedia);
+  document.querySelector('[data-tab="games"]')?.addEventListener('click', loadGames);
+  document.querySelector('[data-tab="media"]')?.addEventListener('click', loadMedia);
 
   // Sync settings engine dropdown
   const settingEngine = document.getElementById('setting-engine');
