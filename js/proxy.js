@@ -1,5 +1,7 @@
 (function initProxy() {
   const WORKER_URL = window.location.origin;
+  const WISP_URL = 'wss://wisp.mercurywork.shop/'; // Public Wisp server
+
   const engineSelect = document.getElementById('engine-select');
   const browserForm = document.getElementById('browser-form');
   const browserUrl = document.getElementById('browser-url');
@@ -24,33 +26,37 @@
     const engine = engineSelect.value;
     let proxyUrl = '';
 
-    // Route to the correct engine path through our Worker's Bare server
-    if (engine === 'rh') {
-        proxyUrl = `${WORKER_URL}/bare/rammerhead/${encodeURIComponent(targetUrl)}`;
-    } else if (engine.startsWith('sj')) {
-      proxyUrl = `${WORKER_URL}/bare/scramjet/${encodeURIComponent(targetUrl)}`;
+    // --- Engine Routing ---
+    if (engine.startsWith('sj')) {
+      // Scramjet 2.x uses Wisp. The service worker in the Scramjet bundle handles routing.
+      // You must serve the Scramjet files and register the service worker.
+      // This URL pattern is a placeholder. The actual proxying happens via the Scramjet service worker.
+      proxyUrl = `${WORKER_URL}/scramjet/${encodeURIComponent(targetUrl)}`;
+    } else if (engine === 'rh') {
+      // Rammerhead uses Bare
+      proxyUrl = `${WORKER_URL}/bare/rammerhead/${encodeURIComponent(targetUrl)}`;
     } else {
+      // Ultraviolet uses Bare
       proxyUrl = `${WORKER_URL}/bare/uv/${encodeURIComponent(targetUrl)}`;
     }
 
-    // About:Blank Cloaking Logic
+    // --- About:Blank Cloaking (Full App) ---
     if (aboutBlankCloak && aboutBlankCloak.checked) {
-        const win = window.open('about:blank', '_blank');
-        if (win) {
-            win.document.write(`<iframe src="${proxyUrl}" style="width:100%;height:100%;border:none;margin:0;padding:0;"></iframe>`);
-            win.document.body.style.margin = '0';
-            win.document.body.style.overflow = 'hidden';
-        } else {
-            alert('Please allow pop-ups for About:Blank cloaking to work.');
-            browserUrl.value = targetUrl;
-            urlInput.value = targetUrl;
-            proxyFrame.src = proxyUrl;
-        }
-    } else {
-        browserUrl.value = targetUrl;
-        urlInput.value = targetUrl;
-        proxyFrame.src = proxyUrl;
+      const win = window.open('about:blank', '_blank');
+      if (win) {
+        win.document.write(`<iframe src="${window.location.href}" style="width:100%;height:100%;border:none;margin:0;padding:0;"></iframe>`);
+        win.document.body.style.margin = '0';
+        win.document.body.style.overflow = 'hidden';
+      } else {
+        alert('Please allow pop-ups for About:Blank cloaking to work.');
+      }
+      return;
     }
+
+    // Normal iframe behavior
+    browserUrl.value = targetUrl;
+    urlInput.value = targetUrl;
+    proxyFrame.src = proxyUrl;
   };
 
   browserForm.addEventListener('submit', (e) => {
