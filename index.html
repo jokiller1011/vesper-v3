@@ -4,27 +4,24 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vesper v3</title>
-  <link rel="icon" type="image/png" href="assets/images/vesper-v.png" />
+  <!-- Use your renamed logo file. Ensure it's in assets/images/ -->
+  <link rel="icon" type="image/svg+xml" href="assets/images/VesperLogo(w only).svg" />
   <link rel="stylesheet" href="css/style.css" />
-  <!-- No Simple Icons font needed; we use direct CDN SVGs for dock -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-  <div class="ambient-bg"></div>
-  <!-- Rain removed per request -->
-
-  <!-- Loading overlay -->
+  <!-- Loading Screen -->
   <div id="loading-overlay">
     <div class="loading-logo">
-      <img src="assets/images/vesper-v.png" alt="V" />
+      <img src="assets/images/VesperLogo(w only).svg" alt="V" />
       <p>loading…</p>
     </div>
   </div>
 
-  <!-- Auth screen -->
+  <!-- Auth Screen -->
   <div id="auth-screen" class="hidden">
     <div class="auth-card">
-      <img src="assets/images/vesper-v.png" alt="Vesper v3" class="auth-logo" />
+      <img src="assets/images/VesperLogo(w only).svg" alt="Vesper v3" class="auth-logo" />
       <h1>vesper <span>v3</span></h1>
       <form id="email-auth-form">
         <input type="email" id="auth-email" placeholder="Email" required />
@@ -32,15 +29,15 @@
         <button type="submit" id="auth-submit">Sign In / Sign Up</button>
       </form>
       <button id="github-auth" class="github-btn">
-        <i class="si si-github"></i> Sign in with GitHub
+        <img src="https://cdn.simpleicons.org/github/ffffff" width="16" height="16" alt="" /> Sign in with GitHub
       </button>
       <p class="auth-error" id="auth-error"></p>
     </div>
   </div>
 
-  <!-- Main app -->
+  <!-- Main Application -->
   <div id="app" class="hidden">
-    <!-- Top header -->
+    <!-- Top Bar -->
     <header class="top-bar">
       <div class="nav-arrows">
         <button id="nav-back" aria-label="Back">‹</button>
@@ -48,20 +45,17 @@
         <button id="nav-refresh" aria-label="Refresh">↻</button>
       </div>
       <form class="address-bar" id="address-form">
-        <svg class="lock-icon" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C9.243 2 7 4.243 7 7v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7c0-2.757-2.243-5-5-5zM9 7c0-1.654 1.346-3 3-3s3 1.346 3 3v3H9V7zm3 10a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>
         <input type="text" id="url-input" placeholder="Search or enter URL" />
-        <button type="button" id="bookmark-btn" aria-label="Bookmark">☆</button>
+        <button type="submit" id="bookmark-btn" aria-label="Bookmark">☆</button>
       </form>
-      <div class="top-actions">
-        <a href="https://discord.gg/cB88uhGqn" target="_blank" class="discord-join">
-          <i class="si si-discord"></i> Join Discord
-        </a>
-      </div>
+      <a href="https://discord.gg/cB88uhGqn" target="_blank" class="discord-join">
+        <img src="https://cdn.simpleicons.org/discord/ffffff" width="16" height="16" alt="" /> Join Discord
+      </a>
     </header>
 
-    <!-- RIGHT SIDEBAR (Tabs + Navigation) -->
+    <!-- Right Sidebar (Tabs + Navigation) -->
     <nav class="sidebar">
-      <!-- Tab Bar Section -->
+      <!-- Tab Bar -->
       <div class="tab-bar-container">
         <div class="tab-bar" id="tab-bar">
           <div class="browser-tab active" data-tab-id="0">
@@ -72,26 +66,26 @@
         <button class="new-tab-btn" id="new-tab-btn" aria-label="New tab">+</button>
       </div>
 
-      <!-- Navigation Items (NO SEPARATION between top and bottom) -->
+      <!-- Navigation Items -->
       <div class="sidebar-nav">
         <button data-tab="home" class="active" title="Home">
-          <i class="si si-home"></i>
+          <img src="https://cdn.simpleicons.org/home/ffffff" width="20" height="20" alt="" />
           <span>Home</span>
         </button>
         <button data-tab="browser" title="Browser">
-          <i class="si si-globe"></i>
+          <img src="https://cdn.simpleicons.org/googlechrome/ffffff" width="20" height="20" alt="" />
           <span>Browser</span>
         </button>
         <button data-tab="games" title="Games">
-          <i class="si si-gamepad"></i>
+          <img src="https://cdn.simpleicons.org/gamepad/ffffff" width="20" height="20" alt="" />
           <span>Games</span>
         </button>
         <button data-tab="media" title="Media">
-          <i class="si si-film"></i>
+          <img src="https://cdn.simpleicons.org/film/ffffff" width="20" height="20" alt="" />
           <span>Media</span>
         </button>
         <button data-tab="settings" title="Settings">
-          <i class="si si-settings"></i>
+          <img src="https://cdn.simpleicons.org/settings/ffffff" width="20" height="20" alt="" />
           <span>Settings</span>
         </button>
       </div>
@@ -102,13 +96,13 @@
       <!-- Home Tab -->
       <section id="tab-home" class="tab active">
         <div class="home-center">
-          <img src="assets/images/vesper-clear.svg" alt="vesper" class="home-wordmark" />
+          <img src="assets/images/VesperLogo(Clear).svg" alt="vesper" class="home-wordmark" />
           <form class="search-wrapper" id="home-search-form">
             <input type="text" id="home-search" placeholder="Search the web…" />
           </form>
         </div>
         
-        <!-- Dynamic Dock (Large Icons via Simple Icons CDN) -->
+        <!-- Dock -->
         <div id="dynamic-dock">
           <button class="dock-item" onclick="window.openProxy('https://discord.com')">
             <img src="https://cdn.simpleicons.org/discord/ffffff" alt="Discord" width="32" height="32" />
@@ -123,7 +117,6 @@
             <img src="https://cdn.simpleicons.org/instagram/ffffff" alt="Instagram" width="32" height="32" />
           </button>
           <button class="dock-item" onclick="window.openProxy('https://claude.ai')">
-            <!-- Claude icon from Simple Icons CDN -->
             <img src="https://cdn.simpleicons.org/claude/ffffff" alt="Claude" width="32" height="32" />
           </button>
         </div>
@@ -139,7 +132,7 @@
       <!-- Media Tab -->
       <section id="tab-media" class="tab hidden">
         <h2>Media</h2>
-        <p class="muted-text">Movies & TV shows – powered by free public APIs.</p>
+        <p class="muted-text">Movies & TV shows (Discovery only)</p>
         <div id="media-results" class="media-grid"></div>
       </section>
 
@@ -165,23 +158,27 @@
       <!-- Settings Tab -->
       <section id="tab-settings" class="tab hidden">
         <h2>Settings</h2>
+        
+        <!-- Account -->
         <div class="settings-group">
           <h3>Account</h3>
           <label>Username <input type="text" id="setting-username" placeholder="Change username" /></label>
           <button id="save-username" class="secondary-btn">Save</button>
-          <button id="link-github" class="secondary-btn">Link GitHub</button>
           <button id="sign-out" class="secondary-btn">Sign Out</button>
         </div>
+
+        <!-- Proxy -->
         <div class="settings-group">
           <h3>Prøxy</h3>
           <label>Engine <select id="setting-engine"></select></label>
-          <!-- All checkboxes replaced with sliders -->
-          <label>Close Prevention <input type="range" id="setting-close-prevention" min="0" max="1" value="1" step="1" /></label>
-          <label>Block Prevention <input type="range" id="setting-block-prevention" min="0" max="1" value="1" step="1" /></label>
-          <label>Source Randomization <input type="range" id="setting-source-random" min="0" max="1" value="0" step="1" /></label>
-          <label>URL Encoding <input type="range" id="setting-url-encoding" min="0" max="1" value="0" step="1" /></label>
-          <label>Tor Routing <input type="range" id="setting-tor" min="0" max="1" value="0" step="1" /></label>
+          <label class="toggle-row">Close Prevention <input type="checkbox" id="setting-close-prevention" checked class="toggle-input" /></label>
+          <label class="toggle-row">Block Prevention <input type="checkbox" id="setting-block-prevention" checked class="toggle-input" /></label>
+          <label class="toggle-row">Source Randomization <input type="checkbox" id="setting-source-random" class="toggle-input" /></label>
+          <label class="toggle-row">URL Encoding <input type="checkbox" id="setting-url-encoding" class="toggle-input" /></label>
+          <label class="toggle-row">Tor Routing <input type="checkbox" id="setting-tor" class="toggle-input" /></label>
         </div>
+
+        <!-- Cloaking -->
         <div class="settings-group">
           <h3>Cloaking</h3>
           <label>Tab Cloaking <select id="cloak-select">
@@ -191,27 +188,35 @@
             <option value="ixl">IXL</option>
             <option value="canvas">Canvas</option>
           </select></label>
-          <label>About:Blank Cloaking <input type="range" id="cloak-about-blank" min="0" max="1" value="0" step="1" /></label>
-          <label>Click‑Off Cloaking <input type="range" id="cloak-click-off" min="0" max="1" value="0" step="1" /></label>
+          <label class="toggle-row">About:Blank Cloaking <input type="checkbox" id="cloak-about-blank" class="toggle-input" /></label>
+          <label class="toggle-row">Click‑Off Cloaking <input type="checkbox" id="cloak-click-off" class="toggle-input" /></label>
         </div>
+
+        <!-- Customization -->
         <div class="settings-group">
           <h3>Customization</h3>
           <label>Theme Color <input type="color" id="theme-color" value="#3b82f6" /></label>
-          <label>Background <select id="background-select">
-            <option value="default">Default (Dark)</option>
-            <option value="bg1">Background 1 (bg1.png)</option>
-            <option value="bg2">Background 2 (background.png)</option>
-          </select></label>
+          
+          <!-- Background Selector -->
+          <label style="display:block; margin-bottom:8px;">Background</label>
+          <div class="bg-selector" id="bg-selector">
+            <div class="bg-option active" data-bg="default" style="background:#0a0a0f;"></div>
+            <div class="bg-option" data-bg="bg1" style="background-image: url('assets/backgrounds/1.png'); background-size: cover;"></div>
+            <div class="bg-option" data-bg="bg2" style="background-image: url('assets/backgrounds/background.png'); background-size: cover;"></div>
+          </div>
+
+          <label class="toggle-row" style="margin-top:12px;">Liquid Glass <input type="checkbox" id="setting-liquid-glass" class="toggle-input" /></label>
         </div>
-        <p class="credits">Credits: jokiller1011 (founder), coolgui (co‑founder), GN‑Math, Mercury Workshop.</p>
+
+        <p class="credits">Credits: jokiller1011, coolgui, GN-Math, Mercury Workshop.</p>
       </section>
     </main>
   </div>
 
+  <!-- Scripts -->
   <script src="js/supabase-config.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/loading.js"></script>
-  <!-- Rain removed -->
   <script src="js/proxy.js"></script>
   <script src="js/app.js"></script>
 </body>
