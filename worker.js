@@ -1,10 +1,9 @@
 // Cloudflare Worker – Prøxy backend + Static Frontend for Vesper v3
 
-// Public Bare servers for proxying fallback
 const BARE_SERVERS = [
+  'https://uv.holyubofficial.net/',
   'https://bare.mercuryworkshop.org/',
-  'https://demo-opensource.rammerhead.org/',
-  'https://uv.example.com/bare/' // Backup placeholder
+  'https://demo-opensource.rammerhead.org/'
 ];
 let bareIndex = 0;
 
@@ -13,6 +12,7 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
+    // CORS headers for proxy requests
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
@@ -23,7 +23,15 @@ export default {
       return new Response(null, { headers: corsHeaders });
     }
 
-    // --- Prøxy Bare Server Routing with Fallback ---
+    // --- Wisp WebSocket Endpoint for Scramjet 2.x ---
+    if (path === '/wisp/' && request.headers.get('Upgrade') === 'websocket') {
+      // In a real deployment, you would forward the WebSocket to a Wisp server.
+      // This is a placeholder that returns a 501 for now.
+      // To actually run Wisp, you need a dedicated server (see docs).
+      return new Response('Wisp endpoint placeholder', { status: 501 });
+    }
+
+    // --- Bare Server Routing with Fallback ---
     if (path.startsWith('/bare/')) {
       for (let i = 0; i < BARE_SERVERS.length; i++) {
         const server = BARE_SERVERS[(bareIndex + i) % BARE_SERVERS.length];
@@ -35,10 +43,10 @@ export default {
             body: request.body,
           });
           if (response.ok) {
-            bareIndex = (bareIndex + i) % BARE_SERVERS.length; // Update to the working server
+            bareIndex = (bareIndex + i) % BARE_SERVERS.length;
             return addCors(response, corsHeaders);
           }
-        } catch (e) { /* Ignore and try next server */ }
+        } catch (e) { /* Try next server */ }
       }
       return new Response('All Bare servers failed', { status: 502, headers: corsHeaders });
     }
