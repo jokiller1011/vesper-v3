@@ -21,7 +21,7 @@ export default {
       return new Response(null, { headers: corsHeaders });
     }
 
-    // --- Bare Server Routing (For UV/Rammerhead) ---
+    // Bare server routing (for UV/Rammerhead)
     if (path.startsWith('/bare/')) {
       for (let i = 0; i < BARE_SERVERS.length; i++) {
         const server = BARE_SERVERS[(bareIndex + i) % BARE_SERVERS.length];
@@ -41,7 +41,7 @@ export default {
       return new Response('All Bare servers failed', { status: 502, headers: corsHeaders });
     }
 
-    // --- Static Frontend Fallback ---
+    // Static frontend fallback
     try {
       const response = await env.ASSETS.fetch(request);
       if (response.status === 404) {
