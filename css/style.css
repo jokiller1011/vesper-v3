@@ -13,31 +13,47 @@
   --font: 'Inter', 'Segoe UI', system-ui, sans-serif;
   --radius-sm: 8px;
   --radius-md: 12px;
-  --sidebar-w: 78px; /* Slightly wider for tabs */
+  --sidebar-w: 78px;
   --header-h: 56px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { height: 100%; overflow: hidden; }
-
 body {
   font-family: var(--font);
   background: var(--bg-base);
   color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  transition: background 0.3s;
 }
+
+/* Dynamic Background Classes */
+body.bg-default { background: var(--bg-base); }
+body.bg-bg1 { background-image: url('../assets/backgrounds/1.png'); }
+body.bg-bg2 { background-image: url('../assets/backgrounds/background.png'); }
 
 .hidden { display: none !important; }
 button { font-family: inherit; cursor: pointer; border: none; background: none; }
 input, select { font-family: inherit; }
 
-/* ========== AMBIENT & RAIN ========== */
-.ambient-bg {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(59, 130, 246, 0.1), transparent),
-              radial-gradient(ellipse 40% 40% at 0% 80%, rgba(59, 130, 246, 0.05), transparent);
+/* ========== LIQUID GLASS TOGGLE ========== */
+body.liquid-glass .top-bar,
+body.liquid-glass .sidebar,
+body.liquid-glass .auth-card,
+body.liquid-glass .search-wrapper,
+body.liquid-glass #dynamic-dock,
+body.liquid-glass .settings-group {
+  background: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(18px) saturate(1.6) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25),
+              inset 0 -1px 0 rgba(255, 255, 255, 0.06),
+              0 8px 32px rgba(0, 0, 0, 0.35) !important;
 }
-#rain-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
 /* ========== LOADING & AUTH ========== */
 #loading-overlay {
@@ -54,12 +70,14 @@ input, select { font-family: inherit; }
 #auth-screen {
   position: fixed; inset: 0; z-index: 900;
   display: flex; align-items: center; justify-content: center;
-  background: radial-gradient(ellipse at 50% 40%, rgba(59,130,246,0.08), transparent 60%); backdrop-filter: blur(8px);
+  background: radial-gradient(ellipse at 50% 40%, rgba(59,130,246,0.08), transparent 60%);
+  backdrop-filter: blur(8px);
 }
 .auth-card {
   width: 380px; padding: 40px 36px; text-align: center;
   background: var(--bg-elevated); border: 1px solid var(--border-subtle);
-  border-radius: 20px; backdrop-filter: blur(32px); box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+  border-radius: 20px; backdrop-filter: blur(32px);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
 }
 .auth-logo { width: 64px; height: 64px; margin-bottom: 20px; background: #fff; border-radius: 16px; padding: 12px; box-sizing: border-box; }
 .auth-card h1 { font-size: 2rem; font-weight: 700; margin-bottom: 28px; }
@@ -91,7 +109,6 @@ input, select { font-family: inherit; }
 .address-bar input { flex: 1; background: none; border: none; outline: none; color: #fff; font-size: 0.9rem; }
 .address-bar button { color: var(--text-secondary); font-size: 1.2rem; padding: 4px; }
 .address-bar button:hover { color: var(--accent); }
-.lock-icon { color: var(--text-secondary); }
 
 .top-actions { display: flex; align-items: center; }
 .discord-join {
@@ -100,12 +117,12 @@ input, select { font-family: inherit; }
 }
 .discord-join:hover { background: #4752c4; }
 
-/* ========== RIGHT SIDEBAR (Tabs + Navigation) ========== */
+/* ========== RIGHT SIDEBAR ========== */
 .sidebar {
   position: fixed; top: var(--header-h); right: 0; bottom: 0; width: var(--sidebar-w);
   display: flex; flex-direction: column;
   padding: 8px 0 16px; background: var(--bg-elevated); border-left: 1px solid var(--border-subtle);
-  backdrop-filter: blur(24px); z-index: 100; gap: 8px; /* Added gap for spacing between sections */
+  backdrop-filter: blur(24px); z-index: 100; gap: 8px;
 }
 /* Tab Bar Container */
 .tab-bar-container {
@@ -129,15 +146,16 @@ input, select { font-family: inherit; }
 }
 .new-tab-btn:hover { background: var(--bg-hover); color: #fff; }
 
-/* Sidebar Navigation Sections */
-.sidebar-nav-top, .sidebar-nav-bottom { display: flex; flex-direction: column; gap: 4px; width: 100%; }
-.sidebar-nav-bottom { margin-top: auto; } /* Pushes this section to the bottom */
+/* Navigation Items */
+.sidebar-nav { display: flex; flex-direction: column; gap: 4px; width: 100%; margin-top: auto; }
 .sidebar button {
   display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; padding: 10px 0;
   color: var(--text-secondary); font-size: 0.65rem; font-weight: 500; transition: 0.15s;
 }
 .sidebar button:hover { color: #fff; background: var(--bg-hover); }
 .sidebar button.active { color: var(--accent); background: rgba(59, 130, 246, 0.1); box-shadow: inset -3px 0 0 var(--accent); }
+.sidebar button img { filter: brightness(0) invert(1); opacity: 0.7; transition: opacity 0.2s; }
+.sidebar button.active img { opacity: 1; }
 
 /* ========== MAIN CONTENT ========== */
 #main-content {
@@ -167,12 +185,13 @@ input, select { font-family: inherit; }
   backdrop-filter: blur(24px); box-shadow: 0 16px 48px rgba(0,0,0,0.5); z-index: 100;
 }
 .dock-item {
-  width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
+  width: 64px; height: 64px; display: flex; align-items: center; justify-content: center;
   color: #fff; border-radius: 14px; transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s;
 }
-.dock-item:hover { transform: scale(1.4) translateY(-12px); background: rgba(255,255,255,0.1); }
+.dock-item:hover { transform: scale(1.2) translateY(-10px); background: rgba(255,255,255,0.1); }
+.dock-item img { width: 36px; height: 36px; }
 
-/* ========== GAMES & BROWSER & MEDIA ========== */
+/* ========== GAMES, MEDIA, BROWSER ========== */
 .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 16px; margin-top: 12px; }
 .game-card {
   background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: 12px;
@@ -181,10 +200,7 @@ input, select { font-family: inherit; }
 .game-card:hover { transform: translateY(-4px); border-color: var(--border-accent); }
 
 .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 12px; }
-.media-card {
-  background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: 12px;
-  padding: 16px; display: flex; flex-direction: column; gap: 8px;
-}
+.media-card { background: var(--bg-glass); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
 .media-card h3 { font-size: 0.9rem; }
 .media-card p { font-size: 0.75rem; color: var(--text-secondary); }
 
@@ -203,29 +219,18 @@ input, select { font-family: inherit; }
 .settings-group h3 { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
 .settings-group label { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 10px; }
 .settings-group select, .settings-group input[type="color"] { margin-left: auto; padding: 5px 10px; background: rgba(0,0,0,0.3); color: #fff; border: 1px solid var(--border-subtle); border-radius: 6px; }
-.settings-group input[type="checkbox"] { accent-color: var(--accent); width: 15px; height: 15px; }
 .secondary-btn { padding: 8px 16px; margin-right: 8px; background: rgba(255,255,255,0.08); color: #fff; border-radius: 8px; }
 .secondary-btn:hover { background: rgba(255,255,255,0.15); }
 .credits { font-size: 0.78rem; color: var(--text-secondary); opacity: 0.6; margin-top: 8px; }
 
-/* 1. Bigger Dock Icons */
-#dynamic-dock { padding: 16px 24px; }
-.dock-item { width: 64px; height: 64px; }
-.dock-item img { width: 40px; height: 40px; transition: transform 0.2s; }
-.dock-item:hover img { transform: scale(1.15); }
+/* Toggle Switch Styling */
+.toggle-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.toggle-input { appearance: none; width: 40px; height: 20px; background: rgba(255,255,255,0.1); border-radius: 999px; position: relative; cursor: pointer; transition: 0.3s; }
+.toggle-input::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: #fff; border-radius: 50%; transition: 0.3s; }
+.toggle-input:checked { background: var(--accent); }
+.toggle-input:checked::after { transform: translateX(20px); }
 
-/* 2. Single Sidebar Navigation (No Separation) */
-.sidebar { display: flex; flex-direction: column; gap: 8px; padding: 12px 0; }
-.sidebar-nav { display: flex; flex-direction: column; gap: 4px; width: 100%; }
-.sidebar-nav button { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 0; font-size: 0.65rem; }
-/* Ensure tabs and nav flow together */
-.tab-bar-container { border-bottom: none; margin-bottom: 0; }
-
-/* 3. Slider Styling for Settings */
-.settings-group input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; outline: none; }
-.settings-group input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; background: var(--accent); border-radius: 50%; cursor: pointer; }
-
-/* 4. Background Switching (Dynamic) */
-body.bg-default { background: var(--bg-base); }
-body.bg-bg1 { background: url('assets/backgrounds/1.png') no-repeat center center fixed; background-size: cover; }
-body.bg-bg2 { background: url('assets/backgrounds/background.png') no-repeat center center fixed; background-size: cover; }
+/* Background Selector */
+.bg-selector { display: flex; gap: 10px; margin-top: 8px; }
+.bg-option { width: 60px; height: 40px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; transition: 0.2s; }
+.bg-option.active { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
