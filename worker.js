@@ -1,5 +1,4 @@
-// Cloudflare Worker – Prøxy backend + Static Frontend for Vesper v3
-
+// Cloudflare Worker – Vesper v3
 const BARE_SERVERS = [
   'https://uv.holyubofficial.net/',
   'https://bare.mercuryworkshop.org/',
@@ -12,7 +11,6 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    // CORS headers for proxy requests
     const corsHeaders = {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
@@ -23,15 +21,7 @@ export default {
       return new Response(null, { headers: corsHeaders });
     }
 
-    // --- Wisp WebSocket Endpoint for Scramjet 2.x ---
-    if (path === '/wisp/' && request.headers.get('Upgrade') === 'websocket') {
-      // In a real deployment, you would forward the WebSocket to a Wisp server.
-      // This is a placeholder that returns a 501 for now.
-      // To actually run Wisp, you need a dedicated server (see docs).
-      return new Response('Wisp endpoint placeholder', { status: 501 });
-    }
-
-    // --- Bare Server Routing with Fallback ---
+    // --- Bare Server Routing (For UV/Rammerhead) ---
     if (path.startsWith('/bare/')) {
       for (let i = 0; i < BARE_SERVERS.length; i++) {
         const server = BARE_SERVERS[(bareIndex + i) % BARE_SERVERS.length];
